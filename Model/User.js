@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    required: [true, "Hereglegchiin neriig zaaval oruulna uu!"],
+  },
   email: {
     type: String,
 
@@ -14,6 +17,11 @@ const UserSchema = new mongoose.Schema({
     default: "User",
   },
   phone: Number,
+  profileImg: String,
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 const user = mongoose.model("User", UserSchema, "Users");
 
