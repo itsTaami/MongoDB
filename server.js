@@ -6,7 +6,7 @@ const path = require("path");
 const cors = require("cors");
 
 const connectDB = require("./config/mongodb");
-const logger = require("./logger/logger");
+const logger = require("./middlewares/logger");
 const cloudinary = require("./utils/cloudinary");
 
 const error = require("./middlewares/error");
