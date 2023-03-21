@@ -3,9 +3,13 @@ const dotenv = require("dotenv");
 const colors = require("colors");
 const multer = require("multer");
 const path = require("path");
+const cors = require("cors");
 
 const connectDB = require("./config/mongodb");
 const logger = require("./logger/logger");
+const cloudinary = require("./utils/cloudinary");
+
+const error = require("./middlewares/error");
 
 const userRoutes = require("./Routes/userRoutes");
 const categoryRoutes = require("./Routes/categoryRoutes");
@@ -35,13 +39,20 @@ const dbURL = process.env.DATABASE_URI;
 const app = express();
 
 //middleware
+app.use(cors());
 app.use(express.json());
 app.use(logger);
 app.use("/uploads", express.static("uploads"));
 
+//Routes
+
 app.use("/users", userRoutes);
 app.use("/category", categoryRoutes);
 app.use("/travel", travelRoutes);
+
+app.get("/", (req, res) => {
+  res.json({ message: "Hello" });
+});
 
 app.post("/upload", upload.single("image"), (req, res) => {
   console.log("req:", req.file);
@@ -50,11 +61,11 @@ app.post("/upload", upload.single("image"), (req, res) => {
     imgUrl: `${req.protocol}://${req.hostname}:${PORT}/${req.file.path}`,
   });
 });
-app.get("/", (req, res) => {
-  res.json({ message: "Hello" });
-});
 console.log(`-----------------------------------------`.yellow);
+
+app.use(error);
 connectDB(dbURL);
+
 app.listen(PORT, () => {
   console.log(`The Server is turned on at ${PORT}`.blue);
 });

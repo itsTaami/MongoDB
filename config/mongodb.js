@@ -5,8 +5,8 @@ const mongoose = require("mongoose");
 const connectDB = async (dbURL) => {
   try {
     // console.log(dbURL);
-    await mongoose.connect(dbURL);
-    console.log("connected to MongoDB ");
+    const db = await mongoose.connect(dbURL);
+    console.log(`Connected to MongoDB ${db.connection.host}`.magenta);
   } catch (err) {
     console.log("An error occured while connecting to MongoDB: ", err);
   }

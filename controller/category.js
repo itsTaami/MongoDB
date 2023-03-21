@@ -14,7 +14,7 @@ const getAllCategory = async (req, res) => {
   }
 };
 
-const createCategory = async (req, res) => {
+const createCategory = async (req, res, next) => {
   console.log(req.body);
   const { title, description, categoryImg, categoryRating } = req.body;
 
@@ -30,9 +30,10 @@ const createCategory = async (req, res) => {
     });
     res.status(201).json({ message: "Successfully registered", category });
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Burtgel amjiltgui bolloo", error: error.message });
+    // res
+    //   .status(400)
+    //   .json({ message: "Burtgel amjiltgui bolloo", error: error.message });
+    next(error);
   }
 };
 
