@@ -16,11 +16,11 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
-const createUser = async (req, res, nexts) => {
+const createUser = async (req, res, next) => {
   console.log(req.body);
-  const { name, email, password, profileImg } = req.body;
+  const { name, email, password } = req.body;
 
-  if (!name || !email || !password || !profileImg) {
+  if (!name || !email || !password) {
     res.status(400).json({ message: "Ner,email,esvel nuuts ug baihgui baina" });
   }
   try {
@@ -28,7 +28,6 @@ const createUser = async (req, res, nexts) => {
       name,
       email,
       password,
-      profileImg,
     });
     res.status(201).json({ message: "Successfully registered", user });
   } catch (err) {
@@ -39,7 +38,7 @@ const createUser = async (req, res, nexts) => {
   }
 };
 
-const getUser = async (req, res) => {
+const getUser = async (req, res, next) => {
   const { id } = req.params;
   if (!id) {
     res.status(400).json({
@@ -105,4 +104,29 @@ const deleteUser = async (req, res) => {
     next(error);
   }
 };
-module.exports = { createUser, getAllUsers, getUser, updateUser, deleteUser };
+const login = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.find({ email, password });
+    if (!user.length) {
+      res.status(400).json({
+        message: `${email}-iin  email esvel password buruu baina`,
+      });
+    }
+    res.status(200).json({
+      message: `Amjilttai nevterlee`,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports = {
+  createUser,
+  getAllUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+  login,
+};

@@ -3,12 +3,10 @@ const Category = require("../Model/Category");
 const getAllCategory = async (req, res) => {
   try {
     const category = await Category.find({});
-    res
-      .status(201)
-      .json({ message: "Hereglegchiin medeelel oldloo", category });
+    res.status(201).json({ message: "All Category", category });
   } catch (err) {
     res.status(400).json({
-      message: "Hereglegchiin medeelliig avhad aldaa garlaa",
+      message: "Category medeelliig avhad aldaa garlaa",
       err: err.message,
     });
   }
@@ -41,7 +39,7 @@ const getCategory = async (req, res) => {
   const { id } = req.params;
   if (!id) {
     res.status(400).json({
-      message: `${id} id tai hereglegch oldsongui`,
+      message: `${id} id tai category oldsongui`,
       error: error.message,
     });
   }

@@ -22,6 +22,10 @@ const TravelSchema = new mongoose.Schema({
   travelDay: {
     type: Date,
   },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+  },
 });
 
 const Travel = mongoose.model("Travel", TravelSchema);
