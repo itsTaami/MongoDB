@@ -1,18 +1,16 @@
+const { Error } = require("mongoose");
 const Travel = require("../Model/Travel");
 
-const getAllTravel = async (req, res) => {
+const getAllTravel = async (req, res, next) => {
   try {
-    const travel = await Travel.find({});
-    res.status(201).json({ message: "Travel-iin medeelel oldloo", Travel });
+    const travels = await Travel.find().populate("category");
+    res.status(201).json({ message: "Travel-iin medeelel oldloo", travels });
   } catch (err) {
-    res.status(400).json({
-      message: "Travel-iin medeelliig avhad aldaa garlaa",
-      err: err.message,
-    });
+    next(err);
   }
 };
 
-const createTravel = async (req, res) => {
+const createTravel = async (req, res, next) => {
   console.log(req.body);
   const {
     title,
@@ -21,18 +19,19 @@ const createTravel = async (req, res) => {
     travelImg,
     travelLocation,
     travelDay,
+    category,
   } = req.body;
 
-  if (
-    !title ||
-    !description ||
-    !travelPrice ||
-    !travelImg ||
-    !travelLocation ||
-    !travelDay
-  ) {
-    res.status(400).json({ message: "Medeelel buruu baina" });
-  }
+  // if (
+  //   !title ||
+  //   !description ||
+  //   !travelPrice ||
+  //   !travelImg ||
+  //   !travelLocation ||
+  //   !travelDay
+  // ) {
+  //   res.status(400).json({ message: "Medeelel buruu baina" });
+  // }
   try {
     const travel = await Travel.create({
       title,
@@ -44,9 +43,10 @@ const createTravel = async (req, res) => {
     });
     res.status(201).json({ message: "Successfully registered", travel });
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Burtgel amjiltgui bolloo", error: error.message });
+    next(error);
+    // res
+    //   .status(400)
+    //   .json({ message: "Burtgel amjiltgui bolloo", error: error.message });
   }
 };
 
