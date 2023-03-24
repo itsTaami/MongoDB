@@ -15,4 +15,5 @@ router
   .get(getCategory)
   .post(updateCategory)
   .delete(deleteCategory);
+
 module.exports = router;

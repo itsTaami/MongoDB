@@ -4,11 +4,11 @@ const jwt = require("jsonwebtoken");
 
 const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find({});
+    const users = await User.find();
     if (!users) {
       res.status(200).json({ message: "Хэрэглэгчдийн мэдээлэл хоосон байна." });
     }
-    res.status(201).json({ message: "Hereglegchiin medeelel oldloo", users });
+    res.status(201).json({ message: "Hereglegchdiin medeelel oldloo", users });
   } catch (error) {
     // res.status(400).json({
     //   message: "Hereglegchiin medeelliig avhad aldaa garlaa",
@@ -20,30 +20,47 @@ const getAllUsers = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
   console.log(req.body);
-  const { name, email, password, phone } = req.body;
+  const { name, email, password } = req.body;
+
+  try {
+    if (!name || !email || !password) {
+      res
+        .status(400)
+        .json({ message: "Нэр, имэйл эсвэл нууц үг байхгүй байна." });
+    }
+    const user = User.create({
+      name,
+      email,
+      password,
+    });
+    console.log(user);
+    res.status(201).json({ message: "Амжилттай бүртгэгдлээ", user });
+  } catch (error) {
+    next(error);
+  }
 
   // if (!name || !email || !password) {
   //   res.status(400).json({ message: "Ner,email,esvel nuuts ug baihgui baina" });
   // }
-  try {
-    const hashedPassword = bcrypt.hashSync(password, 10);
-    const user = await User.create({
-      name,
-      email,
-      phone,
-      password: hashedPassword,
-    });
-    console.log("user:", user);
-    if (!user.length) {
-      res.status(400).json({ message: `Email or password is incorrect` });
-    }
-    res.status(201).json({ message: "Successfully registered", user });
-  } catch (err) {
-    // res
-    //   .status(400)
-    //   .json({ message: "Burtgel amjiltgui bolloo", error: error.message });
-    next(err);
-  }
+  // try {
+  //   const hashedPassword = bcrypt.hashSync(password, 10);
+  //   const user = await User.create({
+  //     name,
+  //     email,
+  //     phone,
+  //     password: hashedPassword,
+  //   });
+  //   console.log("user:", user);
+  //   if (!user.length) {
+  //     res.status(400).json({ message: `Email or password is incorrect` });
+  //   }
+  //   res.status(201).json({ message: "Successfully registered", user });
+  // } catch (err) {
+  //   // res
+  //   //   .status(400)
+  //   //   .json({ message: "Burtgel amjiltgui bolloo", error: error.message });
+  //   next(err);
+  // }
 };
 
 const getUser = async (req, res, next) => {
@@ -117,14 +134,17 @@ const login = async (req, res, next) => {
   // const { email, password } = req.body;
 
   try {
-    const user = await User.find({ email: req.body.email }).select("+password");
+    const user = await User.findOne({ email: req.body.email }).select(
+      "+password"
+    );
     console.log("user", user);
     if (!user) {
       res.status(400).json({
-        message: `${email}-iin  email esvel password buruu baina`,
+        message: `email esvel password buruu baina`,
       });
     }
     const checkPass = bcrypt.compareSync(req.body.password, user.password);
+    console.log(checkPass);
     if (!checkPass) {
       res.status(400).json({ message: `Email esvel Password buruu baina` });
     }
@@ -145,27 +165,24 @@ const login = async (req, res, next) => {
     next(error);
   }
 };
-// const register = async (req, res, next) => {
-//   console.log(req.body);
-//   const { name, email, password, phone } = req.body;
+const register = async (req, res, next) => {
+  console.log(req.body);
+  const { name, email, password, phone } = req.body;
 
-//   // if (!name || !email || !password) {
-//   //   res.status(400).json({ message: "Ner,email,esvel nuuts ug baihgui baina" });
-//   // }
-//   try {
-//     const user = await User.create({
-//       name,
-//       email,
-//       password,
-//     });
-//     res.status(201).json({ message: "Successfully registered", user });
-//   } catch (err) {
-//     // res
-//     //   .status(400)
-//     //   .json({ message: "Burtgel amjiltgui bolloo", error: error.message });
-//     next(err);
-//   }
-// };
+  try {
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const user = await User.create({
+      name,
+      email,
+      phone,
+      password: hashedPassword,
+    });
+
+    res.status(201).json({ message: "Successfully registered", user });
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {
   register,

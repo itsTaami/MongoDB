@@ -40,8 +40,11 @@ const createTravel = async (req, res, next) => {
       travelImg,
       travelLocation,
       travelDay,
+      category,
     });
-    res.status(201).json({ message: "Successfully registered", travel });
+    res
+      .status(201)
+      .json({ message: " Travel Successfully registered", travel });
   } catch (error) {
     next(error);
     // res
@@ -55,7 +58,6 @@ const getTravel = async (req, res) => {
   if (!id) {
     res.status(400).json({
       message: `${id} id tai travel oldsongui`,
-      error: error.message,
     });
   }
 
