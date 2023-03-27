@@ -140,7 +140,7 @@ const login = async (req, res, next) => {
     console.log("user", user);
     if (!user) {
       res.status(400).json({
-        message: `email esvel password buruu baina`,
+        message: `User null`,
       });
     }
     const checkPass = bcrypt.compareSync(req.body.password, user.password);
