@@ -47,7 +47,7 @@ app.use("/uploads", express.static("uploads"));
 //Routes
 
 app.use("/users", userRoutes);
-app.use("/category", categoryRoutes);
+app.use("/categories", categoryRoutes);
 app.use("/travel", travelRoutes);
 
 app.get("/", (req, res) => {
